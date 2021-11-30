@@ -29,5 +29,6 @@ Learn Solana Blockchain
 	- Rust: https://docs.rs/solana-sdk/1.7.14/solana_sdk/
 
 ## Repositories
+* Monetized, censorship resistant social media - https://github.com/sosol-gmi/sosol-program
 
 
