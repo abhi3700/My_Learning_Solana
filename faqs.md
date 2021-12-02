@@ -76,3 +76,59 @@ multiple instructions can be bundled into a __message__ called "__transaction__"
 
 ### Q. What is the replacement of `nonce` here?
 `blockhash`. Every message contains this.
+
+### Q. When the `solana-test-validator` command is used, then where exacty the validator's info is stored?
+It is stored in a file in the folder named `test-ledger/` of current directory the terminal opened at. It looks like this:
+
+```
+.
+├── accounts
+│   ├── 0.0
+│   ├── 0.1
+│   ├── 0.2
+│   ├── 0.3
+│   ├── 0.38
+│   ├── 0.4
+│   ├── 1.5
+│   ├── 10.14
+│   ├── 10.56
+│   ├── 100.171
+│   ├── 100.237
+│   ├── 11.58
+│   ├── 99.168
+│   └── 99.239
+├── admin.rpc
+├── faucet-keypair.json
+├── genesis.bin
+├── genesis.tar.bz2
+├── ledger.lock
+├── rocksdb
+│   ├── 000077.sst
+│   ├── 000078.sst
+│   ├── 000079.sst
+│   ├── 000080.sst
+│   ├── 000081.sst
+│   ├── 000082.sst
+│   ├── 000083.sst
+│   ├── 000085.log
+│   ├── CURRENT
+│   ├── IDENTITY
+│   ├── LOCK
+│   ├── LOG
+│   ├── LOG.old.1638423285952250
+│   ├── MANIFEST-000084
+│   ├── OPTIONS-000117
+│   └── OPTIONS-000119
+├── snapshot
+│   └── 100
+│       └── 100
+├── snapshot-100-F8SWyJ3qoE4soxNHLfbExwhpzBegXN7R5qLvZaGuSkhR.tar
+├── tower-AzGBwL6WRyjbZc5AjLqN3WaMFxKDWFE92zZu5mFedLfQ.bin
+├── validator-1638423285664.log
+├── validator-keypair.json
+├── validator.log -> validator-1638423285664.log
+└── vote-account-keypair.json
+
+4 directories, 325 files
+```
+
