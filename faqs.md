@@ -13,10 +13,13 @@ Account
 ### Q. Does data & code stored in programs here?
 No.
 
-Code and data is separated.
+Code and data is stored separately.
+
+### Q. What is the difference b/w cluster & node?
+A cluster is a network like mainnet, testnet, devnet, localnet whereas a node is a part of a cluster.
 
 ### Q. Where the data is stored?
-In the accounts
+In the accounts owned by a program.
 
 ### Q. Who creates this account required for storing data?
 Program creates it an account like this in `initialize` function of a program:
@@ -132,3 +135,24 @@ It is stored in a file in the folder named `test-ledger/` of current directory t
 4 directories, 325 files
 ```
 
+### Q. What is the lowest unit of SOL?
+_lamport_
+
+1 SOL = 1e9 lamport
+
+### Q. What is meant by account ownership?
+In Solana, account ownership can only be done by a program/contract.
+
+### Q. What is account holder?
+In Solana, account holder is mainly referred to a human who own the private key of the account.
+
+### Q. What is rent charged for?
+The Solana network charges rent for time & space based storage into their memory (RAM). Each account can have owner-controlled state (`Account::data`) that's separate from the account's balance (`Account::lamports`).
+
+Accounts which maintain a 2-year worth of lamports, are exempted from transaction fee.
+
+### Q. What are the 2 types of charging transaction fee?
+1. Set it and forget it
+1. Pay per byte
+
+The rent is generally in `lamports per KB-year`.

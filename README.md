@@ -30,5 +30,6 @@ Learn Solana Blockchain
 
 ## Repositories
 * Monetized, censorship resistant social media - https://github.com/sosol-gmi/sosol-program
+* Solidity Compiler for Solana, Substrate, and ewasm - https://github.com/hyperledger-labs/solang
 
 
