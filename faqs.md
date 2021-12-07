@@ -1,3 +1,6 @@
+### Q. What is block time in Solana?
+0.4s (accurate 0.46s)
+
 ### Q. Which encryption is used in Solana?
 ed25519 meaning `2^255 - 19`
 
@@ -26,6 +29,17 @@ Both are same
 1. App wallet
 2. Web wallet
 3. CLI wallet
+
+### Q. What is the Solana VM called?
+Sealevel, like EVM in Ethereum, BSC, Polygon,..
+
+### Q. Which programming languages is supported for writing Solana smart contract?
+1. Rust (mostly used)
+2. C
+3. C++
+
+### How much is the estimated transaction fees?
+10 USD for 1 M transactions.
 
 ### Q. Which output file is running in Solana?
 BPF (usually with `.so` as extension): BPF file of ELF format
