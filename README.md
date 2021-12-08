@@ -12,7 +12,9 @@ Learn Solana Blockchain
 
 ### Chains
 * Explorers:
+	- https://solscan.io/
 	- https://explorer.solana.com/
+	- https://solanascan.io/
 	- https://solanabeach.io/
 * API: https://github.com/solana-beach/api
 * Faucet: https://solfaucet.com/

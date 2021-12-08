@@ -23,12 +23,22 @@ yiCUEF4v76inZBFXazYivLGsD33CUNiafA7yJAGGHbxjU52CuKGVr6WNGFivMhKmvA1bs8gtQsToSLCQ
 88 chars
 
 ### Q. What is the difference between public key & address?
-Both are same
+Both are same, unlike in EVM chains, where address is a `snip_last_20bytes(SHA256(public_key))`.
 
 ### What are the different types of wallets?
 1. App wallet
 2. Web wallet
 3. CLI wallet
+
+### Q. What is a Solana program?
+A __program__ is to Solana what a __smart contract__ is to other protocols. Once a program has been deployed, any app can interact with it by sending a transaction containing the program instructions to a Solana cluster, which will pass it to the program to be run.
+
+> Solana programs are stateless. To store values we must use a separate account.
+
+### Q. What is a PDA?
+Program Derived Account is an account whose owner is a program and thus is not controlled by a private key like other accounts.
+
+> Usually, account addresses are usually the public key of a keypair. A program derived address is NOT a public key, and thus has no associated private key. Note that every account has an owner that’s a program, so that part of the definition is a bit redundant.
 
 ### Q. What is the Solana VM called?
 Sealevel, like EVM in Ethereum, BSC, Polygon,..
