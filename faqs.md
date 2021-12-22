@@ -378,3 +378,10 @@ pub struct Instruction {
     pub data: Vec<u8>,
 }
 ```
+
+### Q. Why use Anchor in writing solana programs?
+
+| Solana | Anchor |
+|--|--|
+| Solana program architecture uses `Entrypoint`, `State`, `Processor`, `Instruction`, `Lib` and `Error` files. So, these are taken care of `Anchor` | Anchor has modules, modules are basically a way of grouping structs, functions, methods etc in a large program to make it more easier to export and reuse |
+| used `BorshSerialize` and `BorshDeserialize` traits from the `Borsh` crate | 4 traits AccountSerialize, Account Deserialise, AnchorSerialize and AnchorDeserialize which are just modified versions of Borsh traits. |
