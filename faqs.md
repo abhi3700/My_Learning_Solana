@@ -22,6 +22,22 @@ yiCUEF4v76inZBFXazYivLGsD33CUNiafA7yJAGGHbxjU52CuKGVr6WNGFivMhKmvA1bs8gtQsToSLCQ
 
 88 chars
 
+### Q. What a transaction contains?
+It contains:
+
+1. __Signatures__: array of signatures to get permissions within a transaction. E.g. sending tokens. Unlike Ethereum, it contains many signers (if present).
+2. __Metadata__ contains list of accounts that will be referenced/used in this transaction and a “recent” block hash.
+  - message:
+    + header which includes 3 `uint8`s (account who will sign the payload, account of read-only addresses that require signatures, account of read-only addresses that do not require signatures). Used as metadata internally during runtime to check permissions.
+  - array of account addresses: the accounts which are accessed
+  - previous block hash
+3. __Instruction__: contains 3 pieces of data:
+  - set of accounts used whether signer or writeable,
+  - program ID which references the location of code being called,
+  - a buffer with some data in it, which functions as calldata
+
+[Source](https://medium.com/@asmiller1989/solana-transactions-in-depth-1f7f7fe06ac2)
+
 ### Q. What is the difference between public key & address?
 Both are same, unlike in EVM chains, where address is a `snip_last_20bytes(SHA256(public_key))`.
 
@@ -77,6 +93,8 @@ Instruction is the minimum unit that a Solana node to execute:
 ![](./img/instruction.png)
 
 Dapp send serialized program params and account info to Solana node, Solana node find the related on-chain programs and send the data to the program, then the program deserialize it and execute the command using the params.
+
+> NOTE: if one of the instructions fails, then the whole transaction gets reverted. Same as EOSIO.
 
 ### Q. What is Solana account? How is it executed?
 Every Solana account/program has these on-chain resources: __RAM__, __file__, __CPU(Compute budget)__, etc.
@@ -242,6 +260,8 @@ In Solana, account ownership can only be done by a program/contract.
 
 ### Q. What is account holder?
 In Solana, account holder is mainly referred to a human who own the private key of the account.
+
+account holder (on Solana) <--> EOA (on EVM chains)
 
 ### Q. What is rent charged for?
 The Solana network charges rent for time & space based storage into their memory (RAM). Each account can have owner-controlled state (`Account::data`) that's separate from the account's balance (`Account::lamports`).
