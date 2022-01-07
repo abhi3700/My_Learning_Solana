@@ -8,17 +8,21 @@ ed25519 meaning `2^255 - 19`
 SHA256
 
 ### Q. How does a public key looks like?
-8JKxV9WFUN828KsN2ka7ejHaNfxUMM5hdo7WuMGEtwMc
+`8JKxV9WFUN828KsN2ka7ejHaNfxUMM5hdo7WuMGEtwMc` (44 chars)
 
-44 chars
+ranges from 32 to 44 chars
+
+32 chars - `snip_32_chars(SHA256(public_key)`
+
+`base58` encoded.
 
 ### Q. How does a private key look like?
-yiCUEF4v76inZBFXazYivLGsD33CUNiafA7yJAGGHbxjU52CuKGVr6WNGFivMhKmvA1bs8gtQsToSLCQAde4ysp
+`yiCUEF4v76inZBFXazYivLGsD33CUNiafA7yJAGGHbxjU52CuKGVr6WNGFivMhKmvA1bs8gtQsToSLCQAde4ysp`
 
 87 chars
 
 ### Q. How does a transaction hash/signature look like?
-5DTMVt3jN5dbxsbkWQESKq5MvZemFdL2LyfhW6VA5VUgEt95h218kTh2gECKTMkVQpSpEEsmW2Vba3w1MC3APMYn
+`5DTMVt3jN5dbxsbkWQESKq5MvZemFdL2LyfhW6VA5VUgEt95h218kTh2gECKTMkVQpSpEEsmW2Vba3w1MC3APMYn`
 
 88 chars
 
@@ -38,8 +42,12 @@ It contains:
 
 [Source](https://medium.com/@asmiller1989/solana-transactions-in-depth-1f7f7fe06ac2)
 
+> NOTE: Some account addresses don’t require signatures. For example, a program might enforce that only a certain account can increment a counter, in which case the account’s address would require a signature. On the other hand, a program could let anyone read/write anything, in which case no signature would be required. For more on this, see the Anchor docs.
+
+![](./img/solana_transaction.png)
+
 ### Q. What is the difference between public key & address?
-Both are same, unlike in EVM chains, where address is a `snip_last_20bytes(SHA256(public_key))`.
+In Solana, both are same, unlike in EVM chains, where address is a `snip_last_20bytes(SHA256(public_key))`.
 
 ### What are the different types of wallets?
 1. App wallet
@@ -50,11 +58,37 @@ Both are same, unlike in EVM chains, where address is a `snip_last_20bytes(SHA25
 A __program__ is to Solana what a __smart contract__ is to other protocols. Once a program has been deployed, any app can interact with it by sending a transaction containing the program instructions to a Solana cluster, which will pass it to the program to be run.
 
 > Solana programs are stateless. To store values we must use a separate account.
+> In Ethereum, contract accounts store code, but they also store state (which the code can read/write). In Solana, a program account ONLY stores code, and its state is stored in one or more data accounts. In other words, if you are a Solana smart contract developer and you want to store some data, you first need to deploy the program account, and then create one or more data accounts to store data associated with the program.
 
-### Q. What is a PDA?
-Program Derived Account is an account whose owner is a program and thus is not controlled by a private key like other accounts.
+### Q. What is a Solana account holder?
+It's like any EOA in EVM chains which has a public & private key pair.
+
+> NOTE: It's different than PDA.
+
+Solana account is represented by a public key which can be either of these types:
+
+- an ed25519 public key
+- a program-derived account address (32-byte value forced off the ed25519 curve)
+- a hash of an ed25519 public key with a 32 character string
+
+### Q. What does a Solana account contain?
+
+> NOTE: a program is also an account
+
+These are the data:
+
+* `lamports`: The number of lamports owner by this account
+* `owner`: The program owner of this account
+* `executable`: Whether this account can process instructions
+* `data`: The raw data byte array stored by this account
+* `rent_epoch`: The next epoch that this account will owe rent
+
+### Q. What is a Solana PDA?
+"Program Derived Account" is an account whose owner is a program and thus is not controlled by a private key like other accounts.
 
 > Usually, account addresses are usually the public key of a keypair. A program derived address is NOT a public key, and thus has no associated private key. Note that every account has an owner that’s a program, so that part of the definition is a bit redundant.
+
+A PDA also serves as _input_ & _output_ of a program. In other words, on-chain state is represented by accounts. If a program wants to modify on-chain state, it modifies an account (or multiple accounts).
 
 ### Q. What is the Solana VM called?
 Sealevel, like EVM in Ethereum, BSC, Polygon,..
@@ -76,6 +110,8 @@ The BPF file(usually with `.so` as extension) needs to be deployed to Solana val
 
 ### Q. Which program representation file type is used in Solana?
 IDL - Interface Description Language.
+
+If you've developed on Ethereum, the `IDL` is analogous to the `abi.json`.
 
 ### Q. How to generate BPF bytecode?
 Normally, LLVM can compile C, Rust code to BPF bytecode.
@@ -99,7 +135,7 @@ Dapp send serialized program params and account info to Solana node, Solana node
 ### Q. What is Solana account? How is it executed?
 Every Solana account/program has these on-chain resources: __RAM__, __file__, __CPU(Compute budget)__, etc.
 
-> In EOS, there is no limit set for RAM, CPU (network compute time), NET (network bandwidth).
+> In EOS, there is no limit set for an account in terms of RAM, CPU (network compute time), NET (network bandwidth).
 
 In Solana, each program has a finite limit of on-chain resources:
 
@@ -111,7 +147,7 @@ Hence, there is no case possible, where programs have competing resources.
 
 Every piece of information saved on-chain is a file (account & file are same). So, people need to pay SOL for the space of the file.
 
- If you want to close a file, you just transfer all the SOL of this file out, since there is no fee to pay the space of this file.
+If you want to close a file, you just transfer all the SOL of this file out, since there is no fee to pay the space of this file.
  
 ### Q. What is the difference b/w account & program & file?
 Account & file has public-private key pair, whereas a program has only id and is executable.
@@ -153,7 +189,7 @@ The program owns these accounts. This leads to less boilerplate and less code to
 ### Q. Where the code is stored?
 In the programs.
 
-Programs need to fetch the data from an account, then it is mentioned like this:
+Programs need to fetch the data from an account, hence it is mentioned like this:
 
 ```
 #[account]
@@ -194,6 +230,8 @@ multiple instructions can be bundled into a __message__ called "__transaction__"
 
 ### Q. What is the replacement of `nonce` here?
 `blockhash`. Every message contains this.
+
+> NOTE: In EOSIO also, there is no nonce, but a corresponding blockhash.
 
 ### Q. When the `solana-test-validator` command is used, then where exacty the validator's info is stored?
 It is stored in a file in the folder named `test-ledger/` of current directory the terminal opened at. It looks like this:
@@ -253,7 +291,7 @@ It is stored in a file in the folder named `test-ledger/` of current directory t
 ### Q. What is the lowest unit of SOL?
 _lamport_
 
-1 SOL = 1e9 lamport
+`1 SOL = 1e9 lamport` i.e. 1 Billion
 
 ### Q. What is meant by account ownership?
 In Solana, account ownership can only be done by a program/contract.
@@ -264,7 +302,7 @@ In Solana, account holder is mainly referred to a human who own the private key 
 account holder (on Solana) <--> EOA (on EVM chains)
 
 ### Q. What is rent charged for?
-The Solana network charges rent for time & space based storage into their memory (RAM). Each account can have owner-controlled state (`Account::data`) that's separate from the account's balance (`Account::lamports`).
+The Solana network charges rent for time (i.e. how long stored?) & space (i.e. how much stored?) based storage into their memory (RAM). Each account can have owner-controlled state (`Account::data`) that's separate from the account's balance (`Account::lamports`).
 
 Accounts which maintain a 2-year worth of lamports, are exempted from transaction fee.
 
@@ -273,6 +311,9 @@ Accounts which maintain a 2-year worth of lamports, are exempted from transactio
 1. Pay per byte
 
 The rent is generally in `lamports per KB-year`.
+
+- `KB` is the _space_ here.
+- `year` is the _time_ here.
 
 ### Q. What is `runtime`?
 Here, we can compute budget for a program in this way:
@@ -405,3 +446,140 @@ pub struct Instruction {
 |--|--|
 | Solana program architecture uses `Entrypoint`, `State`, `Processor`, `Instruction`, `Lib` and `Error` files. So, these are taken care of `Anchor` | Anchor has modules, modules are basically a way of grouping structs, functions, methods etc in a large program to make it more easier to export and reuse |
 | used `BorshSerialize` and `BorshDeserialize` traits from the `Borsh` crate | 4 traits AccountSerialize, Account Deserialise, AnchorSerialize and AnchorDeserialize which are just modified versions of Borsh traits. |
+
+### Q. How to identify the owner of a PDA?
+In order to differentiate which account is used as storage for which program, each account has an owner field.
+
+> NOTE:
+> - Any solana program can read data of an un-owned solana PDA.
+> - But, only the owner (solana program) can modify the data of owned solana PDA.
+> - This contrasts with the EVM where a smart contract cannot read the storage of another contract, the contract must expose a `public` api for reading storage information that may be useful.
+
+### Q. What are the native programs on Solana?
+Following is a list of native Solana programs with their corresponding program_ids:
+
+- system_program (Program id: `11111111111111111111111111111111`)
+- stake (Program id: `Stake11111111111111111111111111111111111111`)
+- vote (Program id: `Vote111111111111111111111111111111111111111`)
+- config (Program id: `Config1111111111111111111111111111111111111`)
+- BPFLoaderUpgradeab1e (Program id: `BPFLoaderUpgradeab1e11111111111111111111111`)
+- Ed25519 (Program id: `Ed25519SigVerify111111111111111111111111111`)
+- Secp256k1 (Program id: `KeccakSecp256k11111111111111111111111111111`)
+- spl_token (Program id: `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+- spl_associated_token_account (Program id: `ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL`)
+
+### Q. How to invoke cross program?
+2 ways of invoking cross programs:
+
+A. without signature i.e. `solana_program::program::invoke`
+
+```rs
+pub fn invoke(
+    instruction: &Instruction,
+    account_infos: &[AccountInfo<'_>]
+) -> ProgramResult
+```
+
+B. with signature i.e. `solana_program::program::invoke_signed`
+```rs
+pub fn invoke_signed(
+    instruction: &Instruction,
+    account_infos: &[AccountInfo<'_>]
+    signers_seeds: &[&[&[u8]]]
+) -> ProgramResult
+```
+
+> Note: internally, invoke calls invoke_signed without signer_seeds.
+
+Now, `Instruction` is defined as:
+```
+pub struct Instruction {
+    pub program_id: Pubkey,
+    pub accounts: Vec<Metadata>,
+    pub data: Vec<u8>,
+}
+```
+
+Now, `invoke` or `invoke_signed` after implementing _RefCell_ check is written as:
+```rs
+pub fn invoke(
+    instruction: &Instruction,
+    account_infos: &[AccountInfo<'_>],
+) -> ProgramResult {
+    // Check that the account RefCells are consistent with the request
+    for account_meta: &AccountMeta in instruction.accounts.iter() {
+        for account_info: &AccountInfo in account_infos.iter() {
+            if account_meta.pubkey == *account_info.key {
+                let _ = account_info.try_borrow_mut_lamports()?;
+                let _ = account_info.try_borrow_mut_data()?;
+            } else {
+                let _ = account_info.try_borrow_lamports()?;
+                let _ = account_info.try_borrow_data()?;
+            }
+
+            break;
+        }
+    }
+}
+```
+
+> The RefCell checking can be compute unit expensive due to nested loops.
+
+> To avoid that expense, dapps may choose to use `invoke_unchecked` and `invoke_signed_unchecked`, the unchecked version of invoke and invoke_signed respectively, which do not check RefCells.
+
+> However, use `invoke_unchecked` and `invoke_signed_unchecked` at your own risk: only when you are certain that the accounts used in instruction are consistent with those in the account_infos.
+
+### Q. When a program is invoked in a cross program invokation, who gives the permission?
+Program owner.
+
+> Every account including programs has an owner. When a solana program is invoked, its owner is used to process the instruction (`invoke` or `invoke_signed`)
+
+> For solana programs, their owners are either the [native loader](https://explorer.solana.com/address/NativeLoader1111111111111111111111111111111) or [BPF loader](https://explorer.solana.com/address/BPFLoader2111111111111111111111111111111111).
+
+### Q. What is a native loader?
+The native loader (`NativeLoader1111111111111111111111111111111`) is a special program that is the owner of most native Solana programs (those program_ids ended with `111111111111111111111111111`).
+
+The native loader is also the owner of three BPF loaders:
+
+* `[BPFLoaderUpgradeab1e](https://explorer.solana.com/address/BPFLoaderUpgradeab1e11111111111111111111111)` (the upgradeable Solana BPF loader. The upgradeable BPF loader is responsible for deploying, upgrading, and executing BPF programs.)
+* `[BPFLoader2](https://explorer.solana.com/address/BPFLoader2111111111111111111111111111111111)` (The latest Solana BPF loader. The BPF loader is responsible for loading, finalizing, and executing BPF programs.)
+* `[BPFLoader](https://explorer.solana.com/address/BPFLoader1111111111111111111111111111111111)` (The original and now deprecated Solana BPF loader)
+
+### Q. What is `BPFLoaderUpgradeable` & `BPFLoader`?
+* The programs which are upgradeable use Upgradeable BPF Loader to deploy the program, so their owner is `BPFLoaderUpgradeab1e` and they can be upgraded by an upgrade authority set at the program deployment time.
+
+* The programs which are immutable use `BPFLoader2` or `BPFLoader` to deploy. E.g. `spl_token`, `spl_associated_token` are loaded by this.
+
+### Q. What is a system program?
+* [account details](https://explorer.solana.com/address/11111111111111111111111111111111) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana/blob/master/runtime/src/system_instruction_processor.rs).
+* It is the most frequently invoked program.
+* Used for:
+  - create new accounts
+  - allocate account data
+  - assign accounts to owning programs
+  - transfer lamports from System Program owned accounts
+  - pay transaction fees.
+* It is the _owner_ of all wallet accounts.
+
+> Note: only the owner of an account has write access to the account. If an account is not owned by a program, the program is only permitted to read its data and credit the account (but not debit the account).
+
+> The System Program is also the _default owner_ of an account when the account is created by `create_account`. It is then allowed to transfer lamports and importantly _assign_ account ownership, i.e., changing owner to a different program id.
+
+### Q. What is a spl_token?
+* It provides functions for creating and managing tokens (including both fungible and non-fungible tokens, i.e. NFTs).
+* [account details](https://explorer.solana.com/address/TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana-program-library/blob/master/token/program/src/instruction.rs).
+* `spl_token` is commonly used to create new tokens, mint, burn, and distribute to users. The following instructions are frequently used in Solana smart contracts:
+* Create a token account
+`spl_token::instruction::initialize_account`
+* Create a token mint
+`spl_token::instruction::initialize_mint`
+* Mint new tokens to an account
+`spl_token::instruction::mint_to`
+* Transfers tokens from one account to another
+`spl_token::instruction::transfer`
+* Burns tokens by removing them from an account
+`spl_token::instruction::burn`
+* Approves a delegate
+`spl_token::instruction::approve`
