@@ -583,3 +583,60 @@ The native loader is also the owner of three BPF loaders:
 `spl_token::instruction::burn`
 * Approves a delegate
 `spl_token::instruction::approve`
+
+### Q. What is a spl associated token?
+* It allows a user to create a main token account for each token they own. Internally, it maps the user's wallet address to a unique associated token account for each token mint.
+* [account details](https://explorer.solana.com/address/ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana-program-library/blob/master/associated-token-account/program/src/lib.rs).
+* Specifically, to create an associated token for the given wallet address and token mint, use `create_associated_token_account`
+
+### Q. What is a stake program?
+* The Stake Program is used to create and manage accounts representing stake and rewards for validators or their delegators.
+* [account details](https://explorer.solana.com/address/Stake11111111111111111111111111111111111111) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana/blob/master/programs/stake/src/stake_instruction.rs).
+* Initialize a stake with lockup and authorization information `stake::instruction::initialize`
+* Authorize a key to manage stake or withdrawal
+`stake::instruction::authorize`
+* Withdraw unstaked lamports from the stake account
+`stake::instruction::withdraw`
+* Set stake lockup
+`stake::instruction::set_lockup`
+* Deactivates the stake in the account
+`stake::instruction::deactivate_stake`
+* Merge two stake accounts
+`stake::instruction::merge`
+* Split stake off a stake account into another stake account
+`stake::instruction::split`
+* Delegate a stake to a particular vote account
+`stake::instruction::delegate_stake`
+
+### Q. What is a vote program?
+* The Vote Program is used to create and manage accounts that track validator voting state and rewards.
+* [account details](https://explorer.solana.com/address/Vote111111111111111111111111111111111111111) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana/blob/master/programs/vote/src/vote_instruction.rs).
+
+### Q. What is a config program?
+* The Config Program is used to add configuration data to the chain including the list of public keys that are permitted to modify the data.
+
+> `vote` and `config` are primarily used by Solana validators, so we omit details here.
+
+* [account details](https://explorer.solana.com/address/Config1111111111111111111111111111111111111) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana/blob/master/programs/config/src/config_instruction.rs).
+
+### Q. What is a ed25519 program?
+* The Ed25519 Signature Verify Program takes an ed25519 signature, public key, and message, and is used to verify if the message is signed by the (corresponding secret) private key.
+* [account details](https://explorer.solana.com/address/Ed25519SigVerify111111111111111111111111111) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana/blob/master/core/src/sigverify.rs).
+* By default, signatures are verified in parallel using all available CPU cores. When perf-libs are available signature verification is offloaded to the GPU.
+* Multiple signatures can be verified. If any of the signatures fail to verify, an error is returned.
+
+### Q. What is a secp256k1 program?
+* The Secp256k1 Recover Program is used to recover Secp256k1 public key from a signed message (ecrecover). It is added to support Ethereum / Solana bridge.
+* Secp256k1 is the name of the elliptic curve used by popular blockchains (e.g., Bitcoin, Ethereum) to implement public key cryptography. All points on this curve are valid public keys.
+* Both Ed25519 and Secp256k1 programs are precompiled in Solana to maximize performance.
+* [account details](https://explorer.solana.com/address/KeccakSecp256k11111111111111111111111111111) on mainnet.
+* It contains this [code](https://github.com/solana-labs/solana/blob/master/sdk/program/src/secp256k1_recover.rs).
+
+
+
+
