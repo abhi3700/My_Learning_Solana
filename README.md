@@ -2,7 +2,11 @@
 
 Learn Solana Blockchain
 
-## [Concepts](./Concepts)
+## [Concepts](./concepts)
+
+## [Solana-playground](https://github.com/abhi3700/sol-playground)
+
+> This repo focusses on theory rather than practical implementation. For the later, refer my linked playground.
 
 ## Official Repo (by Ethereum Foundation)
 
